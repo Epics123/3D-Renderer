@@ -1,6 +1,7 @@
 #pragma once
 
 #include "WindowsDefines.h"
+#include "Keyboard.h"
 
 struct WindowProps
 {
@@ -25,6 +26,8 @@ public:
 
 	void setVsync(bool enabled);
 	bool isVsync() const { return mData.vSync; }
+
+	Keyboard& getKeyboard() { return mKeyboard; }
 
 private:
 	void init(const WindowProps& props);
@@ -60,4 +63,5 @@ private:
 
 	WindowData mData;
 	HWND mHwnd;
+	Keyboard mKeyboard;
 };

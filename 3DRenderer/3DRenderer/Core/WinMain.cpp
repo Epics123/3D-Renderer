@@ -12,6 +12,9 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
+
+		if (window.getKeyboard().isKeyPressed(VK_SPACE))
+			MessageBox(nullptr, L"Something Happened!", L"Space Key Was Pressed!", 0);
 	}
 
 	return msg.wParam;

@@ -117,7 +117,22 @@ LRESULT Window::handleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 		PostQuitMessage(0);
 		return 0;
-	}break;
+	}
+	case WM_KILLFOCUS:
+		mKeyboard.clearState();
+		break;
+	case WM_KEYDOWN:
+	case WM_SYSKEYDOWN:
+		if(!(lParam & 0x40000000) || mKeyboard.autoRepeatEnabled())
+			mKeyboard.onKeyPressed(wParam);
+		break;
+	case WM_KEYUP:
+	case WM_SYSKEYUP:
+		mKeyboard.onKeyReleased(wParam);
+		break;
+	case WM_CHAR:
+		mKeyboard.onChar(static_cast<unsigned char>(wParam));
+		break;
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }

@@ -145,11 +145,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Core\Keyboard.h" />
     <ClInclude Include="Core\pch.h" />
     <ClInclude Include="Core\Window.h" />
     <ClInclude Include="Core\WindowsDefines.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Core\Keyboard.cpp" />
     <ClCompile Include="Core\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
