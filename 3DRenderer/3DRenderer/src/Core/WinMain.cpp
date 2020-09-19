@@ -13,8 +13,24 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 
-		if (window.getKeyboard().isKeyPressed(VK_SPACE))
-			MessageBox(nullptr, L"Something Happened!", L"Space Key Was Pressed!", 0);
+		while (!window.getMouse().isEmpty())
+		{
+			const auto e = window.getMouse().read();
+
+			switch (e.getType())
+			{
+			case Mouse::Event::EventType::Leave:
+				window.setTitle("Gone!");
+				break;
+			case Mouse::Event::EventType::MouseMove:
+				{
+					std::ostringstream oss;
+					oss << "Mouse Position: (" << e.getX() << ", " << e.getY() << ")";
+					window.setTitle(oss.str());
+				}
+				break;
+			}
+		}
 	}
 
 	return msg.wParam;

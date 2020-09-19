@@ -60,6 +60,15 @@ void Window::setVsync(bool enabled)
 
 }
 
+void Window::setTitle(const std::string& title)
+{
+	std::wstring name;
+	name.assign(title.begin(), title.end());
+	LPCTSTR newTitle = name.c_str();
+
+	SetWindowText(mHwnd, newTitle);
+}
+
 void Window::init(const WindowProps& props)
 {
 	mData.Title = props.Title;
@@ -113,6 +122,47 @@ LRESULT Window::handleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
 	{
+	case WM_MOUSEMOVE:
+		const POINTS pt = MAKEPOINTS(lParam);
+
+		if (pt.x > 0 && pt.y < mData.Width && pt.y > 0 && pt.y < mData.Height)
+		{
+			mMouse.onMouseMove(Vector2D(pt.x, pt.y));
+			if (!mMouse.isInWindow())
+			{
+				SetCapture(hWnd);
+				mMouse.onMouseEnter();
+			}
+		}
+		else
+		{
+			if (wParam & (MK_LBUTTON | MK_RBUTTON))
+				mMouse.onMouseMove(Vector2D(pt.x, pt.y));
+			else
+			{
+				ReleaseCapture();
+				mMouse.onMouseLeave();
+			}
+		}
+
+		mMouse.onMouseMove(Vector2D(pt.x, pt.y));
+		break;
+	case WM_LBUTTONDOWN:
+		mMouse.onLeftPressed();
+		break;
+	case WM_RBUTTONDOWN:
+		mMouse.onRightPressed();
+		break;
+	case WM_LBUTTONUP:
+		mMouse.onLeftReleased();
+		break;
+	case WM_RBUTTONUP:
+		mMouse.onRightReleased();
+		break;
+	case WM_MOUSEWHEEL:
+		const int delta = GET_WHEEL_DELTA_WPARAM(wParam);
+		mMouse.onWheelDelta(delta);
+		break;
 	case WM_CLOSE:
 	{
 		PostQuitMessage(0);

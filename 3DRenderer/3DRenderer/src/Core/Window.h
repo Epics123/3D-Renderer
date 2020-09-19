@@ -2,6 +2,7 @@
 
 #include "WindowsDefines.h"
 #include "Keyboard.h"
+#include "Mouse.h"
 
 struct WindowProps
 {
@@ -28,6 +29,9 @@ public:
 	bool isVsync() const { return mData.vSync; }
 
 	Keyboard& getKeyboard() { return mKeyboard; }
+	Mouse& getMouse() { return mMouse; }
+
+	void setTitle(const std::string& title);
 
 private:
 	void init(const WindowProps& props);
@@ -64,4 +68,5 @@ private:
 	WindowData mData;
 	HWND mHwnd;
 	Keyboard mKeyboard;
+	Mouse mMouse;
 };

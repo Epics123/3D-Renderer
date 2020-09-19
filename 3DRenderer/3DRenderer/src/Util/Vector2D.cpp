@@ -3,11 +3,6 @@
 
 #include <cmath>
 
-Vector2D::Vector2D()
-	:mX(0.0f), mY(0.0f)
-{
-}
-
 Vector2D::Vector2D(int x, int y)
 	:mX((float)x), mY((float)y)
 {
