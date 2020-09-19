@@ -4,6 +4,8 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 
+#include <optional>
+
 struct WindowProps
 {
 	std::string Title;
@@ -32,6 +34,8 @@ public:
 	Mouse& getMouse() { return mMouse; }
 
 	void setTitle(const std::string& title);
+
+	static std::optional<int> processMessages();
 
 private:
 	void init(const WindowProps& props);

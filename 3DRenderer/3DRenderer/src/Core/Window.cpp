@@ -69,6 +69,22 @@ void Window::setTitle(const std::string& title)
 	SetWindowText(mHwnd, newTitle);
 }
 
+std::optional<int> Window::processMessages()
+{
+	MSG msg;
+	while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+	{
+		if (msg.message == WM_QUIT)
+			return msg.wParam;
+
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+
+	//Return empty optional
+	return {};
+}
+
 void Window::init(const WindowProps& props)
 {
 	mData.Title = props.Title;
@@ -160,14 +176,17 @@ LRESULT Window::handleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		mMouse.onRightReleased();
 		break;
 	case WM_MOUSEWHEEL:
+	{	
 		const int delta = GET_WHEEL_DELTA_WPARAM(wParam);
-		mMouse.onWheelDelta(delta);
+		mMouse.onWheelDelta(delta); 
+	}
 		break;
 	case WM_CLOSE:
 	{
 		PostQuitMessage(0);
 		return 0;
 	}
+		break;
 	case WM_KILLFOCUS:
 		mKeyboard.clearState();
 		break;

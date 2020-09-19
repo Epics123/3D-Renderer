@@ -25,6 +25,7 @@
       <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\Core\Application.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Keyboard.cpp">
@@ -43,5 +44,6 @@
       <Filter>Util</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\Core\Application.cpp" />
   </ItemGroup>
 </Project>
