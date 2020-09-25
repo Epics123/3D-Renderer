@@ -18,5 +18,7 @@ int Application::start()
 
 void Application::update()
 {
-
+	mWindow.getGraphics().clearBuffer(0.0f, 0.0f, 0.0f);
+	mWindow.getGraphics().draw();
+	mWindow.getGraphics().endFrame();
 }

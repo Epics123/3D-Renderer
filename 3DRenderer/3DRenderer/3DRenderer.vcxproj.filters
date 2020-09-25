@@ -4,11 +4,17 @@
     <Filter Include="Core">
       <UniqueIdentifier>{2EB4837C-1AEB-840D-C3D7-6A10AFED000F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Rendering">
+      <UniqueIdentifier>{E3AE1F7C-4F19-D4F2-9857-85980401B247}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Util">
       <UniqueIdentifier>{23A78D7C-0FDE-8E0D-B8CA-7410A4E00A0F}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Core\Application.h">
+      <Filter>Core</Filter>
+    </ClInclude>
     <ClInclude Include="src\Core\Keyboard.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -21,13 +27,20 @@
     <ClInclude Include="src\Core\WindowsDefines.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Rendering\Graphics.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
     <ClInclude Include="src\Util\Vector2D.h">
       <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\Core\Application.h" />
+    <ClInclude Include="src\Core\Core.h" />
+    <ClInclude Include="src\3DRenderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Core\Application.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
     <ClCompile Include="src\Core\Keyboard.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -44,6 +57,10 @@
       <Filter>Util</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp" />
-    <ClCompile Include="src\Core\Application.cpp" />
+    <ClCompile Include="src\Rendering\Graphics.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="assets\shaders\VertexShader.hlsl" />
+    <FxCompile Include="assets\shaders\PixelShader.hlsl" />
   </ItemGroup>
 </Project>

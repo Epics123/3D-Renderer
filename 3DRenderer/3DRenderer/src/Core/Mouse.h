@@ -55,8 +55,8 @@ public:
 	Mouse() = default;
 
 	Vector2D getPos() const { return mLocation; }
-	int getX() const { return mLocation.getX(); }
-	int getY() const { return mLocation.getY(); }
+	int getX() const { return (int)mLocation.getX(); }
+	int getY() const { return (int)mLocation.getY(); }
 
 	bool isLeftPressed() const { return mLeftPressed; }
 	bool isRightPressed() const { return mRightPressed; }

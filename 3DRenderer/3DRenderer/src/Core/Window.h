@@ -1,8 +1,10 @@
 #pragma once
 
 #include "WindowsDefines.h"
+#include "3DRenderer.h"
 #include "Keyboard.h"
 #include "Mouse.h"
+#include "Rendering/Graphics.h"
 
 #include <optional>
 
@@ -32,6 +34,7 @@ public:
 
 	Keyboard& getKeyboard() { return mKeyboard; }
 	Mouse& getMouse() { return mMouse; }
+	Graphics& getGraphics() { return *mpGraphics; }
 
 	void setTitle(const std::string& title);
 
@@ -73,4 +76,5 @@ private:
 	HWND mHwnd;
 	Keyboard mKeyboard;
 	Mouse mMouse;
+	Scope<Graphics> mpGraphics;
 };

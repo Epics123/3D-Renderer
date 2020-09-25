@@ -106,6 +106,8 @@ void Window::init(const WindowProps& props)
 		windowRec.right - windowRec.left, windowRec.bottom - windowRec.top, nullptr, nullptr, WindowClass::getInstance(), this);
 
 	ShowWindow(mHwnd, SW_SHOWDEFAULT);
+
+	mpGraphics = CreateScope<Graphics>(mHwnd);
 }
 
 void Window::shutdown()
