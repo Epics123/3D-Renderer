@@ -51,16 +51,33 @@ void Graphics::clearBuffer(float r, float g, float b, float a)
 	mpContext->ClearRenderTargetView(mpTarget.Get(), color);
 }
 
-void Graphics::draw()
+void Graphics::draw(float angle)
 {
-	struct Vertex { float x, y; };
-	const Vertex verticies[] =
+	struct Vertex 
+	{ 
+		struct
+		{
+			float x, y;
+		} pos;
+
+		struct
+		{
+			unsigned char r, g, b, a;
+		} color;
+	};
+	Vertex verticies[] =
 	{
-		{0.0f, 0.5f},
-		{0.5f, -0.5f},
-		{-0.5f, -0.5f}
+		{0.0f, 0.5f, 255, 0, 0, 0},
+		{0.5f, -0.5f, 0, 255, 0, 0},
+		{-0.5f, -0.5f, 0, 0, 255, 0},
+		{-0.3f, 0.3f, 0, 0, 255, 0},
+		{0.3f, 0.3f, 0, 0, 255, 0},
+		{0.0f, -0.8f, 255, 0, 0, 0}
 	};
 
+	verticies[0].color.g = 255;
+
+	//Create Vertex Buffer
 	wrl::ComPtr<ID3D11Buffer> pVertexBuffer;
 	D3D11_BUFFER_DESC bufferDesc = {};
 	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -74,9 +91,69 @@ void Graphics::draw()
 
 	mpDevice->CreateBuffer(&bufferDesc, &sd, &pVertexBuffer);
 
+	//Bind Vertex Buffer to Pipeline
 	const UINT stride = sizeof(Vertex);
 	const UINT offset = 0;
 	mpContext->IASetVertexBuffers(0, 1, pVertexBuffer.GetAddressOf(), &stride, &offset);
+
+	//Create Index Buffer
+	const unsigned short indicies[] =
+	{
+		0, 1, 2,
+		0, 2, 3,
+		0, 4, 1,
+		2, 1, 5
+	};
+	wrl::ComPtr<ID3D11Buffer> pIndexBuffer;
+	D3D11_BUFFER_DESC iBufferDesc = {};
+	iBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	iBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	iBufferDesc.CPUAccessFlags = 0;
+	iBufferDesc.MiscFlags = 0;
+	iBufferDesc.ByteWidth = sizeof(indicies);
+	iBufferDesc.StructureByteStride = sizeof(unsigned short);
+	D3D11_SUBRESOURCE_DATA isd = {};
+	isd.pSysMem = indicies;
+
+	mpDevice->CreateBuffer(&iBufferDesc, &isd, &pIndexBuffer);
+
+	//Bind Index Buffer to Pipeline
+	mpContext->IASetIndexBuffer(pIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+
+	//Create Constant Buffer for Transformation Matrix
+	struct ConstantBuffer
+	{
+		struct
+		{
+			float element[4][4];
+		}transformation;
+	};
+
+	const ConstantBuffer cb =
+	{
+		{
+			(16.0f / 9.0f) * std::cos(angle), std::sin(angle), 0.0f,	0.0f,
+		    (16.0f / 9.0f) *-std::sin(angle), std::cos(angle), 0.0f,	0.0f,
+			0.0f,			 0.0f,			  1.0f, 0.0f,
+			0.0f,			 0.0f,			  0.0f,	1.0f
+		}
+	};
+
+	wrl::ComPtr<ID3D11Buffer> pConstantBuffer;
+	D3D11_BUFFER_DESC cBufferDesc;
+	cBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	cBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cBufferDesc.MiscFlags = 0;
+	cBufferDesc.ByteWidth = sizeof(cb);
+	cBufferDesc.StructureByteStride = 0;
+	D3D11_SUBRESOURCE_DATA csd = {};
+	csd.pSysMem = &cb;
+
+	mpDevice->CreateBuffer(&cBufferDesc, &csd, &pConstantBuffer);
+
+	//Bind Constant Buffer to Pipeline
+	mpContext->VSSetConstantBuffers(0, 1, pConstantBuffer.GetAddressOf());
 
 	//Create Pixel Shader
 	wrl::ComPtr<ID3D11PixelShader> pPixelShader;
@@ -96,7 +173,8 @@ void Graphics::draw()
 	wrl::ComPtr<ID3D11InputLayout> pInputLayout;
 	const D3D11_INPUT_ELEMENT_DESC ied[] =
 	{
-		{"Position", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		{"Position", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 	mpDevice->CreateInputLayout(ied, (UINT)std::size(ied), pBlob->GetBufferPointer(), pBlob->GetBufferSize(), &pInputLayout);
 
@@ -117,5 +195,5 @@ void Graphics::draw()
 	vp.TopLeftY = 0;
 	mpContext->RSSetViewports(1, &vp);
 
-	mpContext->Draw((UINT)std::size(verticies), 0);
+	mpContext->DrawIndexed((UINT)std::size(indicies), 0, 0);
 }

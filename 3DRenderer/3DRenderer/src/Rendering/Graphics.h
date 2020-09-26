@@ -12,7 +12,7 @@ public:
 	void endFrame();
 	void clearBuffer(float r, float g, float b, float a=1.0f);
 
-	void draw();
+	void draw(float angle);
 
 private:
 	Microsoft::WRL::ComPtr<ID3D11Device> mpDevice;

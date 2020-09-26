@@ -101,6 +101,7 @@
     <ClInclude Include="src\Core\Window.h" />
     <ClInclude Include="src\Core\WindowsDefines.h" />
     <ClInclude Include="src\Rendering\Graphics.h" />
+    <ClInclude Include="src\Util\Timer.h" />
     <ClInclude Include="src\Util\Vector2D.h" />
     <ClInclude Include="src\pch.h" />
   </ItemGroup>
@@ -111,6 +112,7 @@
     <ClCompile Include="src\Core\WinMain.cpp" />
     <ClCompile Include="src\Core\Window.cpp" />
     <ClCompile Include="src\Rendering\Graphics.cpp" />
+    <ClCompile Include="src\Util\Timer.cpp" />
     <ClCompile Include="src\Util\Vector2D.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
