@@ -12,11 +12,12 @@ public:
 	void endFrame();
 	void clearBuffer(float r, float g, float b, float a=1.0f);
 
-	void draw(float angle);
+	void draw(float angle, float x, float z);
 
 private:
 	Microsoft::WRL::ComPtr<ID3D11Device> mpDevice;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> mpSwapChain;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> mpContext;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> mpTarget;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> mpDepthStencilView;
 };

@@ -18,9 +18,8 @@ int Application::start()
 
 void Application::update()
 {
-	const float c = sin(mTimer.peek()) / 2.0f + 0.5f;
-
 	mWindow.getGraphics().clearBuffer(0.0f, 0.0f, 0.0f);
-	mWindow.getGraphics().draw(mTimer.peek());
+	mWindow.getGraphics().draw(-mTimer.peek(), 0.0f, 0.0f);
+	mWindow.getGraphics().draw(mTimer.peek(), mWindow.getMouse().getX() / 1280.0f - 1.0f, -mWindow.getMouse().getY() / 720.0f + 1.0f);
 	mWindow.getGraphics().endFrame();
 }

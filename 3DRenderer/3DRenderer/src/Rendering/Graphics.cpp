@@ -2,11 +2,13 @@
 #include "Graphics.h"
 
 #include <d3dcompiler.h>
+#include <DirectXMath.h>
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
 
 namespace wrl = Microsoft::WRL;
+namespace dx = DirectX;
 
 Graphics::Graphics(HWND hWnd)
 {
@@ -34,6 +36,44 @@ Graphics::Graphics(HWND hWnd)
 	mpDevice->CreateRenderTargetView(pBackBuffer.Get(), nullptr, &mpTarget);
 
 	pBackBuffer->Release();
+
+	//Create Depth Stencil State
+	D3D11_DEPTH_STENCIL_DESC dsDesc = {};
+	dsDesc.DepthEnable = TRUE;
+	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	wrl::ComPtr<ID3D11DepthStencilState> pDSState;
+
+	mpDevice->CreateDepthStencilState(&dsDesc, &pDSState);
+
+	//Bind Depth State
+	mpContext->OMSetDepthStencilState(pDSState.Get(), 1);
+
+	//Create Depth Stencil Texture
+	wrl::ComPtr<ID3D11Texture2D> pDepthStencil;
+	D3D11_TEXTURE2D_DESC depthDesc = {};
+	depthDesc.Width = 1280;
+	depthDesc.Height = 720;
+	depthDesc.MipLevels = 1;
+	depthDesc.ArraySize = 1;
+	depthDesc.Format = DXGI_FORMAT_D32_FLOAT;
+	depthDesc.SampleDesc.Count = 1;
+	depthDesc.SampleDesc.Quality = 0;
+	depthDesc.Usage = D3D11_USAGE_DEFAULT;
+	depthDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+
+	mpDevice->CreateTexture2D(&depthDesc, nullptr, &pDepthStencil);
+
+	//Create View of Depth Stencil Texture
+	D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
+	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
+	dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	dsvDesc.Texture2D.MipSlice = 0;
+
+	mpDevice->CreateDepthStencilView(pDepthStencil.Get(), &dsvDesc, &mpDepthStencilView);
+
+	//Bind Depth Stencil View
+	mpContext->OMSetRenderTargets(1, mpTarget.GetAddressOf(), mpDepthStencilView.Get());
 }
 
 Graphics::~Graphics()
@@ -49,33 +89,29 @@ void Graphics::clearBuffer(float r, float g, float b, float a)
 {
 	const float color[] = { r, g, b, a };
 	mpContext->ClearRenderTargetView(mpTarget.Get(), color);
+	mpContext->ClearDepthStencilView(mpDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
-void Graphics::draw(float angle)
+void Graphics::draw(float angle, float x, float z)
 {
 	struct Vertex 
 	{ 
 		struct
 		{
-			float x, y;
+			float x, y, z;
 		} pos;
-
-		struct
-		{
-			unsigned char r, g, b, a;
-		} color;
 	};
 	Vertex verticies[] =
 	{
-		{0.0f, 0.5f, 255, 0, 0, 0},
-		{0.5f, -0.5f, 0, 255, 0, 0},
-		{-0.5f, -0.5f, 0, 0, 255, 0},
-		{-0.3f, 0.3f, 0, 0, 255, 0},
-		{0.3f, 0.3f, 0, 0, 255, 0},
-		{0.0f, -0.8f, 255, 0, 0, 0}
+		{-1.0f, -1.0f, -1.0f},
+		{1.0f, -1.0f, -1.0f},
+		{-1.0f, 1.0f, -1.0f},
+		{1.0f, 1.0f, -1.0f},
+		{-1.0f, -1.0f, 1.0f},
+		{1.0f, -1.0f, 1.0f},
+		{-1.0f, 1.0f, 1.0f},
+		{1.0f, 1.0f, 1.0f}
 	};
-
-	verticies[0].color.g = 255;
 
 	//Create Vertex Buffer
 	wrl::ComPtr<ID3D11Buffer> pVertexBuffer;
@@ -99,10 +135,12 @@ void Graphics::draw(float angle)
 	//Create Index Buffer
 	const unsigned short indicies[] =
 	{
-		0, 1, 2,
-		0, 2, 3,
-		0, 4, 1,
-		2, 1, 5
+		0, 2, 1,  2, 3, 1,
+		1, 3, 5,  3, 7, 5,
+		2, 6, 3,  3, 6, 7,
+		4, 5, 7,  4, 7, 6,
+		0, 4, 2,  2, 4, 6,
+		0, 1, 4,  1, 5, 4
 	};
 	wrl::ComPtr<ID3D11Buffer> pIndexBuffer;
 	D3D11_BUFFER_DESC iBufferDesc = {};
@@ -125,17 +163,15 @@ void Graphics::draw(float angle)
 	{
 		struct
 		{
-			float element[4][4];
+			dx::XMMATRIX transform;
 		}transformation;
 	};
 
 	const ConstantBuffer cb =
 	{
 		{
-			(16.0f / 9.0f) * std::cos(angle), std::sin(angle), 0.0f,	0.0f,
-		    (16.0f / 9.0f) *-std::sin(angle), std::cos(angle), 0.0f,	0.0f,
-			0.0f,			 0.0f,			  1.0f, 0.0f,
-			0.0f,			 0.0f,			  0.0f,	1.0f
+			dx::XMMatrixTranspose(dx::XMMatrixRotationZ(angle) * dx::XMMatrixRotationX(angle) *
+			dx::XMMatrixTranslation(x, 0.0f, z + 4.0f) * dx::XMMatrixPerspectiveLH(1.0f, 9.0f/16.0f, 0.5f, 10.0f))
 		}
 	};
 
@@ -155,6 +191,41 @@ void Graphics::draw(float angle)
 	//Bind Constant Buffer to Pipeline
 	mpContext->VSSetConstantBuffers(0, 1, pConstantBuffer.GetAddressOf());
 
+	struct ConstantBuffer2
+	{
+		struct
+		{
+			float r, g, b, a;
+		}faceColors[6];
+	};
+
+	const ConstantBuffer2 cb2 =
+	{
+		{
+			{1.0f,0.0f,1.0f},
+			{1.0f,0.0f,0.0f},
+			{0.0f,1.0f,0.0f},
+			{0.0f,0.0f,1.0f},
+			{1.0f,1.0f,0.0f},
+			{0.0f,1.0f,1.0f},
+		}
+	};
+
+	wrl::ComPtr<ID3D11Buffer> pConstantBuffer2;
+	D3D11_BUFFER_DESC cbd2;
+	cbd2.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbd2.Usage = D3D11_USAGE_DEFAULT;
+	cbd2.CPUAccessFlags = 0;
+	cbd2.MiscFlags = 0;
+	cbd2.ByteWidth = sizeof(cb2);
+	cbd2.StructureByteStride = 0;
+	D3D11_SUBRESOURCE_DATA csd2 = {};
+	csd2.pSysMem = &cb2;
+
+	mpDevice->CreateBuffer(&cbd2, &csd2, &pConstantBuffer2);
+
+	mpContext->PSSetConstantBuffers(0, 1, pConstantBuffer2.GetAddressOf());
+
 	//Create Pixel Shader
 	wrl::ComPtr<ID3D11PixelShader> pPixelShader;
 	wrl::ComPtr<ID3DBlob> pBlob;
@@ -173,15 +244,11 @@ void Graphics::draw(float angle)
 	wrl::ComPtr<ID3D11InputLayout> pInputLayout;
 	const D3D11_INPUT_ELEMENT_DESC ied[] =
 	{
-		{"Position", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 	mpDevice->CreateInputLayout(ied, (UINT)std::size(ied), pBlob->GetBufferPointer(), pBlob->GetBufferSize(), &pInputLayout);
 
 	mpContext->IASetInputLayout(pInputLayout.Get());
-
-	//Bind Render Target
-	mpContext->OMSetRenderTargets(1, mpTarget.GetAddressOf(), nullptr);
 
 	mpContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
