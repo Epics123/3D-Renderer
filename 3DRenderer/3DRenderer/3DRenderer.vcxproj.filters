@@ -37,6 +37,9 @@
     <ClInclude Include="src\Core\Core.h" />
     <ClInclude Include="src\3DRenderer.h" />
     <ClInclude Include="src\Util\Timer.h" />
+    <ClInclude Include="src\Rendering\Renderer.h" />
+    <ClInclude Include="src\Rendering\VertexArray.h" />
+    <ClInclude Include="src\Rendering\Buffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp">
@@ -60,6 +63,9 @@
     <ClCompile Include="src\pch.cpp" />
     <ClCompile Include="src\Rendering\Graphics.cpp" />
     <ClCompile Include="src\Util\Timer.cpp" />
+    <ClCompile Include="src\Rendering\Renderer.cpp" />
+    <ClCompile Include="src\Rendering\VertexArray.cpp" />
+    <ClCompile Include="src\Rendering\Buffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="assets\shaders\VertexShader.hlsl" />

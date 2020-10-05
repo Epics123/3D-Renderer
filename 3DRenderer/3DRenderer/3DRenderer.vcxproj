@@ -100,7 +100,10 @@
     <ClInclude Include="src\Core\Mouse.h" />
     <ClInclude Include="src\Core\Window.h" />
     <ClInclude Include="src\Core\WindowsDefines.h" />
+    <ClInclude Include="src\Rendering\Buffer.h" />
     <ClInclude Include="src\Rendering\Graphics.h" />
+    <ClInclude Include="src\Rendering\Renderer.h" />
+    <ClInclude Include="src\Rendering\VertexArray.h" />
     <ClInclude Include="src\Util\Timer.h" />
     <ClInclude Include="src\Util\Vector2D.h" />
     <ClInclude Include="src\pch.h" />
@@ -111,7 +114,10 @@
     <ClCompile Include="src\Core\Mouse.cpp" />
     <ClCompile Include="src\Core\WinMain.cpp" />
     <ClCompile Include="src\Core\Window.cpp" />
+    <ClCompile Include="src\Rendering\Buffer.cpp" />
     <ClCompile Include="src\Rendering\Graphics.cpp" />
+    <ClCompile Include="src\Rendering\Renderer.cpp" />
+    <ClCompile Include="src\Rendering\VertexArray.cpp" />
     <ClCompile Include="src\Util\Timer.cpp" />
     <ClCompile Include="src\Util\Vector2D.cpp" />
     <ClCompile Include="src\pch.cpp">

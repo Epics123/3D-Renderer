@@ -7,6 +7,7 @@ class Application
 {
 public:
 	Application();
+	~Application() { mRunning = false; }
 
 	int start();
 
@@ -15,4 +16,6 @@ private:
 
 	Window mWindow;
 	Timer mTimer;
+
+	bool mRunning;
 };
