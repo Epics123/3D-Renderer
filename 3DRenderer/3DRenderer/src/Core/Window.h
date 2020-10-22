@@ -4,7 +4,8 @@
 #include "3DRenderer.h"
 #include "Keyboard.h"
 #include "Mouse.h"
-#include "Rendering/Graphics.h"
+//#include "Rendering/Graphics.h"
+#include "Rendering/Renderer.h"
 
 #include <optional>
 
@@ -34,7 +35,11 @@ public:
 
 	Keyboard& getKeyboard() { return mKeyboard; }
 	Mouse& getMouse() { return mMouse; }
-	Graphics& getGraphics() { return *mpGraphics; }
+	//Graphics& getGraphics() { return *mpGraphics; }
+	Renderer& getRenderer() 
+	{ 
+		return *mpRenderer; 
+	}
 
 	void setTitle(const std::string& title);
 
@@ -76,5 +81,6 @@ private:
 	HWND mHwnd;
 	Keyboard mKeyboard;
 	Mouse mMouse;
-	Scope<Graphics> mpGraphics;
+	//Scope<Graphics> mpGraphics;
+	Scope<Renderer> mpRenderer;
 };

@@ -1,7 +1,9 @@
 #pragma once
 
+#include "3DRenderer.h"
 #include "Window.h"
 #include "Util/Timer.h"
+#include "DrawableObjects/Cube.h"
 
 class Application
 {
@@ -18,4 +20,8 @@ private:
 	Timer mTimer;
 
 	bool mRunning;
+
+	int mMaxObjects = 10;
+
+	std::vector<Scope<Cube>> mCubes;
 };

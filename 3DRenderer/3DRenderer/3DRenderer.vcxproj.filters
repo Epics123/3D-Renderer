@@ -40,6 +40,13 @@
     <ClInclude Include="src\Rendering\Renderer.h" />
     <ClInclude Include="src\Rendering\VertexArray.h" />
     <ClInclude Include="src\Rendering\Buffer.h" />
+    <ClInclude Include="src\Rendering\Shader.h" />
+    <ClInclude Include="src\Rendering\InputLayout.h" />
+    <ClInclude Include="src\Rendering\Topology.h" />
+    <ClInclude Include="src\Rendering\Drawable.h" />
+    <ClInclude Include="src\Rendering\Bindable.h" />
+    <ClInclude Include="src\DrawableObjects\Cube.h" />
+    <ClInclude Include="src\Rendering\TransformConstantBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp">
@@ -66,6 +73,12 @@
     <ClCompile Include="src\Rendering\Renderer.cpp" />
     <ClCompile Include="src\Rendering\VertexArray.cpp" />
     <ClCompile Include="src\Rendering\Buffer.cpp" />
+    <ClCompile Include="src\Rendering\Shader.cpp" />
+    <ClCompile Include="src\Rendering\InputLayout.cpp" />
+    <ClCompile Include="src\Rendering\Topology.cpp" />
+    <ClCompile Include="src\Rendering\Drawable.cpp" />
+    <ClCompile Include="src\DrawableObjects\Cube.cpp" />
+    <ClCompile Include="src\Rendering\TransformConstantBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="assets\shaders\VertexShader.hlsl" />

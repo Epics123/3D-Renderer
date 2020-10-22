@@ -12,7 +12,7 @@ Window::WindowClass::WindowClass()
 	windowClass.lpfnWndProc = handleMsgSetup;
 	windowClass.cbClsExtra = 0;
 	windowClass.cbWndExtra = 0;
-	windowClass.hInstance = HInst;
+	windowClass.hInstance = getInstance();
 	windowClass.hIcon = nullptr;
 	windowClass.hCursor = nullptr;
 	windowClass.hbrBackground = nullptr;
@@ -107,7 +107,8 @@ void Window::init(const WindowProps& props)
 
 	ShowWindow(mHwnd, SW_SHOWDEFAULT);
 
-	mpGraphics = CreateScope<Graphics>(mHwnd);
+	mpRenderer = CreateScope<Renderer>(mHwnd);
+	//mpGraphics = CreateScope<Graphics>(mHwnd);
 }
 
 void Window::shutdown()

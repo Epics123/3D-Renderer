@@ -1,8 +1,11 @@
 #include "pch.h"
 #include "Graphics.h"
 
+#include "Buffer.h"
+
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
+#include <vector>
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
@@ -142,6 +145,7 @@ void Graphics::draw(float angle, float x, float z)
 		0, 4, 2,  2, 4, 6,
 		0, 1, 4,  1, 5, 4
 	};
+
 	wrl::ComPtr<ID3D11Buffer> pIndexBuffer;
 	D3D11_BUFFER_DESC iBufferDesc = {};
 	iBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
